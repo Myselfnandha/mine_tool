@@ -1,0 +1,73 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface": "var(--bg-surface)",
+        "surface-dim": "#dcd9d9",
+        "surface-bright": "#fcf9f8",
+        "surface-container-lowest": "var(--surface-container-lowest)",
+        "surface-container-low": "var(--surface-container-low)",
+        "surface-container": "var(--surface-container)",
+        "surface-container-high": "var(--surface-container-high)",
+        "surface-container-highest": "#e5e2e1",
+        "surface-variant": "#e5e2e1",
+        "on-surface": "var(--text-on-surface)",
+        "on-surface-variant": "var(--text-on-surface-variant)",
+        "inverse-surface": "#313030",
+        "inverse-on-surface": "#f3f0ef",
+        "outline": "var(--outline)",
+        "outline-variant": "var(--outline-variant)",
+        "surface-tint": "#974800",
+        "primary": "#c25e00", // warm cognac
+        "primary-base": "#944600",
+        "on-primary": "#ffffff",
+        "primary-container": "#b95a00",
+        "on-primary-container": "#fffbff",
+        "primary-fixed": "#ffdbc7",
+        "primary-fixed-dim": "#ffb689",
+        "secondary": "#3f6212", // forest sage
+        "secondary-base": "#456818",
+        "on-secondary": "#ffffff",
+        "secondary-container": "#c2ed8d",
+        "on-secondary-container": "#496d1c",
+        "tertiary": "#005ea4", // sapphire slate
+        "on-tertiary": "#ffffff",
+        "tertiary-container": "#0077cd",
+        "on-tertiary-container": "#fdfcff",
+        "error": "#ba1a1a",
+        "on-error": "#ffffff",
+        "error-container": "#ffdad6",
+        "background": "var(--bg-surface)",
+        "on-background": "var(--text-on-surface)",
+      },
+      borderRadius: {
+        "sm": "0.25rem",
+        "DEFAULT": "0.5rem",
+        "md": "0.75rem",
+        "lg": "1rem",
+        "xl": "1.5rem",
+        "full": "9999px",
+      },
+      fontFamily: {
+        "display": ["Newsreader", "serif"],
+        "headline": ["Newsreader", "serif"],
+        "body": ["Newsreader", "serif"],
+        "sans": ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        "mono": ["JetBrains Mono", "ui-monospace", "monospace"],
+      },
+      boxShadow: {
+        "card": "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03)",
+        "card-hover": "0 6px 20px rgba(0, 0, 0, 0.08)",
+        "drawer": "0 -4px 24px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06)",
+        "pill": "0 8px 30px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08)",
+      },
+    },
+  },
+  plugins: [],
+}

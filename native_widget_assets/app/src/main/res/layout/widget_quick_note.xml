@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mine Notes Warm Editorial Utilitarian Quick Widget Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FCF9F8"
+    android:padding="12dp">
+
+    <!-- Header bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mine Notes"
+            android:textColor="#1C1B1B"
+            android:textSize="14sp"
+            android:fontFamily="serif"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/widget_btn_mic"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_mic"
+            android:contentDescription="Voice memo" />
+    </LinearLayout>
+
+    <!-- Quick input field / trigger -->
+    <LinearLayout
+        android:id="@+id/widget_input_box"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#F6F3F2"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Capture a thought without opening..."
+            android:textColor="#897265"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/widget_btn_add"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="#C25E00"
+            android:src="@drawable/ic_arrow_up" />
+    </LinearLayout>
+
+    <!-- Recent pinned note snippet -->
+    <TextView
+        android:id="@+id/widget_recent_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Creative Direction: Brand Refresh 2025"
+        android:textColor="#564337"
+        android:textSize="12sp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+</LinearLayout>

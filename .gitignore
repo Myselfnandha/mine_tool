@@ -1,0 +1,19 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+*.log
+*.zip
+
+# Android build outputs and caches
+android/.gradle
+android/build
+android/app/build
+android/local.properties
+android/.idea
+android/*.iml
+
+# HF Space temp
+hf_space_link_processor/__pycache__
+hf_space_link_processor/*.db

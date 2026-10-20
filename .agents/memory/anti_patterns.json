@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-09-09T17:27:00.356108Z",
+  "anti_patterns": [
+    {
+      "id": "AP-001",
+      "category": "tooling",
+      "mistake": "Unchecked npx execution polluting JSON-RPC stdout with colored notices and ANSI escape sequences",
+      "root_cause": "npx in modern npm writes colored notices to stdout when not silenced, breaking JSON-RPC parsing (invalid character '\\x1b')",
+      "strategy": "Always wrap Node-based MCP servers using mcp-npx with NO_COLOR=1, npm_config_loglevel=silent, and --silent flag",
+      "invariant_rule": "NEVER run raw npx for MCP STDIO processes; always use mcp-npx wrapper."
+    },
+    {
+      "id": "AP-002",
+      "category": "runtime",
+      "mistake": "Sentry MCP server falling back to interactive OAuth device code flow and hanging",
+      "root_cause": "@sentry/mcp-server defaults to interactive device code login if --access-token or SENTRY_ACCESS_TOKEN is omitted",
+      "strategy": "Pass --access-token ${SENTRY_AUTH_TOKEN} explicitly in CLI arguments and provide environment fallback",
+      "invariant_rule": "Always explicitly supply auth tokens via CLI flags when MCP server defaults to interactive browser/device-code login."
+    },
+    {
+      "id": "AP-003",
+      "category": "packaging",
+      "mistake": "Codebase indexer scanning self-extracting archive payload and inflating codebase database to 40MB+",
+      "root_cause": "Scanning binary payloads or packed archive files in analyze.py treats binary blobs as source text",
+      "strategy": "Exclude *.tar.gz, *.tar.xz, install.sh, and dist/ in codebase indexing routines",
+      "invariant_rule": "Always configure self-exclusion lists in static analyzers and file crawlers for binary/build artifacts."
+    },
+    {
+      "id": "AP-004",
+      "category": "architecture",
+      "mistake": "Leaving MCP servers running permanently in background consuming CPU and RAM",
+      "root_cause": "Static mcp_config.json with default background servers creates memory bloat and port collisions",
+      "strategy": "Zero-Default profile: start with empty mcpServers ({}), enable dynamically on-demand, and auto-close upon task completion",
+      "invariant_rule": "Default mcp_config.json must remain empty (0 active servers). Enable servers dynamically and disable immediately after turn."
+    },
+    {
+      "id": "AP-005",
+      "category": "agent_behavior",
+      "mistake": "Agent looping over view_file sequentially to understand an entire folder codebase",
+      "root_cause": "Sequential view_file calls waste context tokens and cause high latency",
+      "strategy": "Execute analyze.py --check --auto-heal --inject-ki and read the consolidated codebase_summary.md in a single read",
+      "invariant_rule": "NEVER call view_file recursively across multiple files in a folder; use codebase_summary.md."
+    },
+    {
+      "id": "AP-006",
+      "category": "agent_behavior",
+      "mistake": "Refactoring code outside the user's requested scope",
+      "root_cause": "Agent interprets adjacent code as needing improvement or unsolicited optimization.",
+      "strategy": "Blast Radius Lock: Declare edit scope upfront; only edit within declared scope; flag out-of-scope issues as follow-up recommendations.",
+      "invariant_rule": "Never touch or refactor files or functions outside the declared blast radius without explicit user authorization."
+    },
+    {
+      "id": "AP-007",
+      "category": "agent_behavior",
+      "mistake": "Claiming success without running verification commands",
+      "root_cause": "Token-pressure or speed bias leads agent to skip test runs and pattern-match 'this looks right' or use speculative language.",
+      "strategy": "Evidence Gate: Always run tests or re-read files, report actual terminal output, never say 'should work'.",
+      "invariant_rule": "Zero speculative claims: every declaration of success requires empirical terminal execution evidence."
+    },
+    {
+      "id": "AP-008",
+      "category": "agent_behavior",
+      "mistake": "Editing files based on stale cached memory instead of current on-disk state",
+      "root_cause": "Files read early in long sessions get modified externally or by background tasks while agent remembers old lines.",
+      "strategy": "Freshness Gate: Re-read target file if >5 tool calls since last read; run git status before multi-file edits.",
+      "invariant_rule": "Always re-read target files before applying diffs if >5 tool calls elapsed or external changes occurred."
+    },
+    {
+      "id": "AP-009",
+      "category": "agent_behavior",
+      "mistake": "Using invented library functions that don't exist in installed packages",
+      "root_cause": "LLM hallucination on fast-moving libraries or niche frameworks where training memory contains plausible APIs.",
+      "strategy": "Hallucination Guard: Verify every unfamiliar API symbol via tool inspection, REPL check, or docs before using.",
+      "invariant_rule": "Verify all library APIs and methods via tools before writing code; pass Import Verification Gate."
+    },
+    {
+      "id": "AP-010",
+      "category": "agent_behavior",
+      "mistake": "Polling in loops or setting redundant timers while waiting for background tasks or command completion",
+      "root_cause": "Failing to utilize the system's reactive wakeup and task notification event loop, resulting in busy-wait polling and wasted timer wakeups",
+      "strategy": "Always use 'Waiting for a task notification' with live status. Avoid unnecessary timers; do not poll; stop calling tools and await direct completion signal",
+      "invariant_rule": "NEVER poll or loop on task status; rely on reactive task completion notifications with live status and avoid unneeded timers."
+    },
+    {
+      "id": "AP-011",
+      "category": "agent_behavior",
+      "mistake": "Reading a single file in multiple sliced chunks or piecemeal line ranges when analyzing it",
+      "root_cause": "Unnecessary line range slicing on single-file analysis resulting in fragmented context and multiple redundant tool calls",
+      "strategy": "When a single file needs to be analyzed, read the entire file in one call (single view_file without line slicing)",
+      "invariant_rule": "Always read a target file in its entirety in a single call when analyzing that file."
+    },
+    {
+      "id": "AP-012",
+      "category": "tooling",
+      "mistake": "Suboptimal or haphazard tool selection resulting in excessive latency, token waste, or context bloat",
+      "root_cause": "Executing operations reflexively using generic shell commands or piecemeal calls without pre-evaluating the optimal specialized tool",
+      "strategy": "Pre-Flight Tool Evaluation: Consciously select the most direct tool (grep_search over shell search, view_file over cat, multi_replace over fragmented edits, reactive async task over polling) before initiating execution",
+      "invariant_rule": "Always determine and select the optimal tool for time, context, and execution efficiency before starting execution."
+    },
+    {
+      "id": "AP-013",
+      "category": "workflow",
+      "mistake": "Adding extraneous YAML frontmatter keys (disable-model-invocation, metadata, license) or mismatched name fields to workflows, or syncing global workflows only to ~/.gemini/config/workflows/",
+      "root_cause": "Antigravity IDE expects strict description-only frontmatter matching the filename stem, and native global workflow discovery watches ~/.gemini/antigravity-ide/global_workflows/",
+      "strategy": "Workflows must strictly contain description-only YAML frontmatter matching their file stems, and global workflows must dual-sync to ~/.gemini/antigravity-ide/global_workflows/ and ~/.gemini/config/workflows/",
+      "invariant_rule": "Maintain strict description-only frontmatter in all workflows and dual-sync global workflows to ~/.gemini/antigravity-ide/global_workflows/."
+    },
+    {
+      "id": "AP-014",
+      "category": "tooling",
+      "mistake": "Invoking generic shell commands, sliced reads, or polling loops instead of specialized tool primitives",
+      "root_cause": "Omitting pre-flight goal, task, and context analysis, leading to unbounded token blowouts, multi-turn latency, and broken shell quoting",
+      "strategy": "Pre-Execution Tool Optimization: Evaluate represented goal, task, and context to select the exact optimal primitive (grep_search for search, full view_file for inspection, multi_replace_file_content for batch edits, tuned run_command for sync execution, reactive wakeup for async tasks)",
+      "invariant_rule": "Always evaluate and dispatch the optimal, lowest-token, highest-velocity primitive before taking action."
+    },
+    {
+      "id": "AP-015",
+      "category": "workflow",
+      "mistake": "Reinventing ad-hoc procedures or ignoring existing domain workflows (e.g. /webperf, /debug, /design-ui, /reach, /yagni-simplify) when a task matches them, or dumping entire workflow text into the conversation context",
+      "root_cause": "Failing to recognize task domain patterns, or loading workflows verbosely rather than reading and executing on-demand",
+      "strategy": "Context-Driven Workflow Adaptation: Match the task domain to the specialized ZeroGravity workflow, read on-demand in a single view_file call, and execute its checklist directly without conversational preamble",
+      "invariant_rule": "Always adopt specialized domain workflows when context warrants, loaded strictly on-demand without context bloat."
+    },
+    {
+      "id": "AP-016",
+      "category": "tooling",
+      "mistake": "Agent executing Python scripts (analyze.py, auto_evolve.py, checklist.py, harness.py, ki_injector.py, learn.py, mcp.py, session_manager.py, summarizer.py, sync_knowledge.py) for internal memory updates, context sweeps, or configuration tasks",
+      "root_cause": "Spawning subprocesses consumes 400-800 tokens per call, creates shell escape issues, adds process startup latency, and bypasses native IDE primitives",
+      "strategy": "Strictly use integrated IDE tools (view_file, write_to_file, replace_file_content, multi_replace_file_content, grep_search, ask_question) directly for all memory, configuration, checklist, and context operations",
+      "invariant_rule": "NEVER invoke internal Python scripts for agent memory, checklist, or context tasks; use native integrated file and search tools."
+    },
+    {
+      "id": "AP-017",
+      "category": "agent_behavior",
+      "mistake": "Performing specialized domain tasks (accessibility, Chrome DevTools testing, HF Hub operations, performance audits) without inspecting and activating the matching available skill",
+      "root_cause": "Improvising ad-hoc actions or generic guesses instead of checking the progressive disclosure skill catalog and reading SKILL.md",
+      "strategy": "Context-Driven Skill Auto-Activation: Identify matching available skills from the index, inspect SKILL.md in a single view_file call, and execute following its documented workflows and runbooks",
+      "invariant_rule": "Always inspect and follow the matching SKILL.md before executing specialized domain tasks."
+    },
+    {
+      "id": "AP-018",
+      "category": "environment",
+      "mistake": "Opening multiple independent IDE windows instead of unified multi-root workspace causing system memory exhaustion and swap lag",
+      "root_cause": "Multiple Electron instances duplicate renderers, extension hosts, and language servers, exhausting RAM and triggering slow disk swap thrashing",
+      "strategy": "Consolidate active projects into a single multi-root workspace using ide-open, prune stale processes with ide-prune, and expand ZRAM to 12GB",
+      "invariant_rule": "Consolidate concurrent development projects into unified multi-root workspaces to avoid Electron process multiplication."
+    }
+  ]
+}

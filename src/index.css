@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-surface: #fcf9f8;
+    --text-on-surface: #1c1b1b;
+    --text-on-surface-variant: #564337;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #f6f3f2;
+    --surface-container: #f0eded;
+    --surface-container-high: #eae7e7;
+    --outline: #897265;
+    --outline-variant: #e5e5e3;
+    --paper-dot: #e5e2e1;
+  }
+
+  html.dark {
+    --bg-surface: #18181b;
+    --text-on-surface: #f4f4f0;
+    --text-on-surface-variant: #a1a1aa;
+    --surface-container-lowest: #27272a;
+    --surface-container-low: #202023;
+    --surface-container: #2b2b2f;
+    --surface-container-high: #323236;
+    --outline: #a1a1aa;
+    --outline-variant: #3f3f46;
+    --paper-dot: #27272a;
+  }
+
+  html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-surface);
+    color: var(--text-on-surface);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Paper texture subtle background feel */
+  body {
+    background-image: radial-gradient(var(--paper-dot) 0.75px, transparent 0.75px);
+    background-size: 24px 24px;
+    background-color: var(--bg-surface);
+  }
+
+  /* Classical book measure for reading */
+  .reading-measure {
+    max-width: 68ch;
+  }
+}
+
+/* Hide scrollbars for clean editorial look */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Material symbol baseline alignment */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Tabular numerals for metadata and counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle fade transitions */
+.fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

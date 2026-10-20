@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-surface-variant": "#564337", "outline-variant": "#ddc1b2", "tertiary-fixed-dim": "#a1c9ff", "on-primary-fixed": "#311300", "on-tertiary": "#ffffff", "secondary": "#456818", "on-primary-fixed-variant": "#733500", "on-primary-container": "#fffbff", "inverse-primary": "#ffb689", "surface-bright": "#fcf9f8", "on-background": "#1c1b1b", "primary": "#944600", "on-tertiary-container": "#fdfcff", "error": "#ba1a1a", "surface-container": "#f0eded", "surface-container-highest": "#e5e2e1", "surface-container-lowest": "#ffffff", "secondary-fixed-dim": "#a9d477", "on-error-container": "#93000a", "surface": "#fcf9f8", "outline": "#897265", "surface-tint": "#974800", "on-secondary": "#ffffff", "surface-dim": "#dcd9d9", "on-secondary-fixed": "#102000", "on-surface": "#1c1b1b", "on-tertiary-fixed": "#001c38", "on-error": "#ffffff", "on-secondary-container": "#496d1c", "on-secondary-fixed-variant": "#2e4f00", "primary-fixed-dim": "#ffb689", "secondary-fixed": "#c5f090", "tertiary-container": "#0077cd", "tertiary": "#005ea4", "error-container": "#ffdad6", "surface-container-low": "#f6f3f2", "on-primary": "#ffffff", "inverse-on-surface": "#f3f0ef", "on-tertiary-fixed-variant": "#004880", "primary-fixed": "#ffdbc7", "surface-container-high": "#eae7e7", "tertiary-fixed": "#d2e4ff", "secondary-container": "#c2ed8d", "primary-container": "#b95a00", "surface-variant": "#e5e2e1", "inverse-surface": "#313030", "background": "#fcf9f8" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2.5rem", "margin": "1.25rem", "gutter-desktop": "2rem", "space-md": "1rem", "space-xs": "0.25rem", "gutter": "1rem", "margin-tablet": "2rem", "margin-desktop": "3rem", "gutter-tablet": "1.5rem", "space-sm": "0.5rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-lg-mobile": [ "Newsreader" ], "body-sans": [ "Inter" ], "label-caps": [ "Inter" ], "body-lg": [ "Newsreader" ], "label-md": [ "Inter" ], "body-md": [ "Newsreader" ], "label-lg": [ "Inter" ], "display": [ "Newsreader" ], "display-mobile": [ "Newsreader" ], "headline-sm": [ "Inter" ], "headline-md": [ "Newsreader" ], "headline-lg": [ "Newsreader" ] }, "fontSize": { "headline-lg-mobile": [ "26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "body-sans": [ "15px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "400" } ], "label-caps": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" } ], "body-lg": [ "20px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "body-md": [ "17px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-lg": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "display": [ "44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "400" } ], "display-mobile": [ "34px", { "lineHeight": "42px", "letterSpacing": "-0.015em", "fontWeight": "400" } ], "headline-sm": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "400" } ] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-sans flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Go Back" class="w-11 h-11 -ml-2 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" onclick="window.history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface truncate leading-tight">Settings &amp; Studio Controls</span><span class="font-label-caps text-label-caps uppercase text-on-surface-variant truncate">Preferences</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Profile" class="w-11 h-11 flex items-center justify-center rounded-full"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLpBAgPJi-CW6u5azBkl6-8K2p6gA1mTN8icHryYmsFtLcnsPXyIPJZV3oIoAJgGOiULCoNv7hGsKAn63LRfGizkJ7Ko2VV7C9dVckBWLzz59KkLmQPoLVWxkAVuK5NniyEBb0tq68pkP8BSoOkN3LgCEgiO1yzTnc8_XNDVBZJI6wxQZ1Q71L-vlYGJZ94ld7uA_LOVbZPdPcxFw9nlOGYtDyajyWVGhr4Km-yjZiYFVJ5x3WzA21"/></button></div></div></header><main class="flex-1 w-full pt-16 pb-28 px-margin bg-surface"><div class="flex flex-col w-full pb-10 space-y-space-lg">
+<!-- Studio Membership & Vault Status Card -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
+<div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl pointer-events-none"></div>
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Atelier Guild Pro</h2>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps uppercase tracking-wider">Active</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant">Archivist Tier · Synchronized</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">cloud_done</span>
+</button>
+</div>
+<!-- Storage Progress Well -->
+<div class="mt-space-sm pt-space-sm rounded-lg bg-surface-container-low p-space-sm">
+<div class="flex justify-between items-center mb-1.5">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-wider">Vault Allocation</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">4.2 GB <span class="text-on-surface-variant font-normal">/ 50 GB</span></span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full rounded-full bg-primary transition-all duration-500" style="width: 8.4%;"></div>
+</div>
+<div class="flex justify-between items-center mt-2 font-label-md text-label-md text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          Local SQLite + Cloud Vault
+        </span>
+<span class="text-primary font-medium hover:underline cursor-pointer">Manage</span>
+</div>
+</div>
+</div>
+<!-- Aesthetics & Paper Grain Selector -->
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">Paper Stock &amp; Typeface</span>
+<span class="font-label-md text-label-md text-primary font-medium">Reset Style</span>
+</div>
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm space-y-space-md">
+<!-- Font Family Preset -->
+<div>
+<label class="font-headline-sm text-headline-sm text-on-surface block mb-space-xs">Editorial Primary Serif</label>
+<p class="font-body-sans text-label-md text-on-surface-variant mb-space-sm">Select the base typesetting engine for drafts and reading canvas.</p>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="font-btn flex flex-col items-center justify-center p-2.5 rounded-lg bg-primary text-on-primary shadow-sm transition-all text-center" data-font="newsreader" type="button">
+<span class="font-headline-md text-headline-md leading-none mb-1">Aa</span>
+<span class="font-label-md text-label-md">Newsreader</span>
+</button>
+<button class="font-btn flex flex-col items-center justify-center p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all text-center" data-font="inter" type="button">
+<span class="font-headline-sm text-headline-sm leading-none mb-1 font-semibold">Ag</span>
+<span class="font-label-md text-label-md">Inter Sans</span>
+</button>
+<button class="font-btn flex flex-col items-center justify-center p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all text-center" data-font="mono" type="button">
+<span class="font-headline-sm text-headline-sm leading-none mb-1 font-mono">01</span>
+<span class="font-label-md text-label-md">Draftsman</span>
+</button>
+</div>
+</div>
+<!-- Tactile Surface Texture Grade -->
+<div class="pt-space-sm">
+<div class="flex justify-between items-center mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Tactile Paper Grade</span>
+<span class="font-label-caps text-label-caps uppercase text-primary" id="grain-label">Subtle 300gsm</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant mb-space-sm">Micro-texture simulation rendered on note canvases.</p>
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="grain-btn py-2 rounded-lg bg-surface-container-low text-on-surface-variant text-center font-label-md text-label-md transition-all hover:bg-surface-container" data-grain="Smooth Ivory" type="button">Off</button>
+<button class="grain-btn py-2 rounded-lg bg-primary text-on-primary text-center font-label-md text-label-md shadow-sm transition-all" data-grain="Subtle 300gsm" type="button">300gsm</button>
+<button class="grain-btn py-2 rounded-lg bg-surface-container-low text-on-surface-variant text-center font-label-md text-label-md transition-all hover:bg-surface-container" data-grain="Heavy Linen Weave" type="button">Heavy Linen</button>
+</div>
+</div>
+</div>
+</div>
+<!-- CANVAS & EDITOR LAYERS -->
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">Canvas &amp; Editor Layers</span>
+<span class="font-label-caps text-label-caps uppercase text-secondary font-semibold">6 Modules Active</span>
+</div>
+<div class="rounded-xl bg-surface-container-lowest shadow-sm divide-y-0 overflow-hidden">
+<!-- Margin & Plate Numbers -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">format_list_numbered</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Tactile Margin &amp; Plate Numbers</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Display book plate numbering, margin notes, and word cadence alongside paragraphs.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Typewriter Focus Mode -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">center_focus_strong</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Typewriter Focus Mode</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Keep the current line pinned vertically in the middle and gently dim past blocks.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Markdown Syntax Highlighting -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">code</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Markdown &amp; Raw Syntax</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Show raw markdown punctuation symbols instead of seamless rendered text.</p>
+</div>
+<button aria-checked="false" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-surface-container-highest p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-0"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Inline Formatting Accessory Bar -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">dock_to_bottom</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Floating Accessory Palette</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Affix ergonomic H1, bold, quote, and link shortcuts directly above virtual keyboard.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Execution & Task Checkboxes -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_box</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Interactive Task Ledgers</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Automatically treat bracket lists as live interactive checklist actions.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Code & Formula Blocks -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">functions</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">KaTeX &amp; Formula Rendering</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Typeset inline LaTeX mathematical notation and syntax highlighted scripts.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+</div>
+</div>
+<!-- WORKSPACE HUB & MODULES -->
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">Workspace Hub &amp; Feeds</span>
+<span class="font-label-caps text-label-caps uppercase text-secondary font-semibold">4 Modules Active</span>
+</div>
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<!-- Voice Canvas -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">graphic_eq</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Voice Canvas &amp; Transcription</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Surface instant dictation waveform dock with on-device speech-to-text.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Daily Focus Progress Ring -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">donut_large</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Daily Focus &amp; Progress Ring</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Header widget displaying daily word target and milestone completion.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Habit & Streak Counters -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">local_fire_department</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Tactile Streak &amp; Consistency</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Minimalist card showcasing uninterrupted journaling momentum.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Action Ledger Aggregation -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">checklist</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Workspace Task Synthesis</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Aggregate open action items across all scattered notes into one ledger.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Archival Quotes Feed -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">format_quote</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Archival Literary Excerpts</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Daily inspiring epigrams from classic philosophy and design masters.</p>
+</div>
+<button aria-checked="false" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-surface-container-highest p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-0"></span>
+</button>
+</div>
+</div>
+</div>
+<!-- STUDIO INTELLIGENCE & SYNC -->
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">Intelligence &amp; Sync</span>
+<span class="font-label-caps text-label-caps uppercase text-secondary font-semibold">Protected</span>
+</div>
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<!-- Semantic Auto-Tagging -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">auto_awesome</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Semantic Auto-Tagging</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Infer tags and ontology nodes locally without cloud data transfers.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Bi-directional Backlink Indexer -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]">alt_route</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Bi-directional Backlinks</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Auto-index linked thoughts when bracketed notebooks are referenced.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Haptic Micro-Interactions -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">vibration</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Tactile Haptic Sensations</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Subtle mechanical haptics on checkbox marks, drag drops, and list snaps.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+<div class="h-px bg-surface-container mx-space-md"></div>
+<!-- Offline Local-First Encryption -->
+<div class="p-space-md flex items-center justify-between gap-space-sm transition-colors hover:bg-surface-container-low/50">
+<div class="min-w-0 pr-2">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">lock</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">AES-256 Vault Sealing</span>
+</div>
+<p class="font-body-sans text-label-md text-on-surface-variant line-clamp-2">Hardware-backed biometric unlock before decrypting local SQL databases.</p>
+</div>
+<button aria-checked="true" class="toggle-switch flex-shrink-0 relative inline-flex h-7 w-12 items-center rounded-full bg-primary p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="toggle-thumb inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform translate-x-5"></span>
+</button>
+</div>
+</div>
+</div>
+<!-- STUDIO ARCHIVE & MANAGEMENT ACTIONS -->
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">Archival Management</span>
+</div>
+<div class="rounded-xl bg-surface-container-lowest p-space-sm shadow-sm space-y-space-xs">
+<!-- Export Atelier Archive -->
+<button class="w-full flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-on-surface group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">archive</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface block">Export Complete Archive</span>
+<span class="font-body-sans text-label-md text-on-surface-variant">ZIP archive of Markdown, media, and JSON metadata</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">chevron_right</span>
+</button>
+<div class="h-px bg-surface-container mx-space-sm"></div>
+<!-- Clear Voice Cache -->
+<button class="w-full flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-on-surface group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">cleaning_services</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface block">Clear Audio Cache</span>
+<span class="font-body-sans text-label-md text-on-surface-variant">Purge 1.4 GB raw audio after local text synthesis</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">chevron_right</span>
+</button>
+<div class="h-px bg-surface-container mx-space-sm"></div>
+<!-- Reset Settings -->
+<button class="w-full flex items-center justify-between p-space-sm rounded-lg hover:bg-error-container/30 transition-colors text-left group">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-error-container/50 flex items-center justify-center text-error group-hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">restart_alt</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm text-error block">Reset Canvas Presets</span>
+<span class="font-body-sans text-label-md text-on-surface-variant">Revert all studio toggles and font scales to default</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-error text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Footnote & Version -->
+<div class="text-center pt-space-sm space-y-1">
+<p class="font-headline-md text-headline-md text-on-surface-variant italic">Atelier Notes</p>
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-widest">Build 4.18.2 · Handcrafted for Thinkers</p>
+</div>
+</div>
+<script>
+  // Tactile Toggle Switch Micro-Interaction
+  document.querySelectorAll('.toggle-switch').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const isChecked = toggle.getAttribute('aria-checked') === 'true';
+      const thumb = toggle.querySelector('.toggle-thumb');
+      
+      if (isChecked) {
+        toggle.setAttribute('aria-checked', 'false');
+        toggle.classList.remove('bg-primary');
+        toggle.classList.add('bg-surface-container-highest');
+        thumb.classList.remove('translate-x-5');
+        thumb.classList.add('translate-x-0');
+      } else {
+        toggle.setAttribute('aria-checked', 'true');
+        toggle.classList.remove('bg-surface-container-highest');
+        toggle.classList.add('bg-primary');
+        thumb.classList.remove('translate-x-0');
+        thumb.classList.add('translate-x-5');
+      }
+    });
+  });
+
+  // Paper Grain Selector
+  const grainLabel = document.getElementById('grain-label');
+  const grainBtns = document.querySelectorAll('.grain-btn');
+  grainBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      grainBtns.forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+        b.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+      });
+      btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+      if (grainLabel) {
+        grainLabel.textContent = btn.getAttribute('data-grain');
+      }
+    });
+  });
+
+  // Typeface Selector
+  const fontBtns = document.querySelectorAll('.font-btn');
+  fontBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      fontBtns.forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+        b.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+      });
+      btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+    });
+  });
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_12px_rgba(0,0,0,0.03)]" data-active-classes="text-primary font-medium"><div class="h-16 px-margin flex items-center justify-around"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="all-notes-feed" href="#"><span class="material-symbols-outlined text-[22px]">edit</span><span class="font-label-caps text-label-caps mt-1">Notes</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="note-editor" href="#"><span class="material-symbols-outlined text-[22px]">edit_document</span><span class="font-label-caps text-label-caps mt-1">Editor</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="daily-workspace-hub" href="#"><span class="material-symbols-outlined text-[22px]">grid_view</span><span class="font-label-caps text-label-caps mt-1">Workspace</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="task-action-tracker" href="#"><span class="material-symbols-outlined text-[22px]">check_circle</span><span class="font-label-caps text-label-caps mt-1">Tasks</span></a></div></nav></body></html>

@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-19T17:05:00.286546+00:00",
+  "strategies": [
+    {
+      "id": "STR-0001",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "ReUI Integration",
+      "content": "ReUI registered as on-demand remote MCP server at https://mcp.reui.io with official skill in .agents/skills/reui and /reui workflow.",
+      "ecosystem": "general",
+      "tags": [],
+      "source": "agent",
+      "project": "agent",
+      "hash": "7102f16b7c3f991e",
+      "captured_at": "2026-09-17T05:37:08.603526+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0002",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "Antigravity Workflow Frontmatter Contract & Global Discovery",
+      "content": "All Antigravity workflows must contain description-only YAML frontmatter matching their file stems without disable-model-invocation or metadata tags. Global workflows must be synchronized to ~/.gemini/antigravity-ide/global_workflows/. Major executions must auto-run /learn and finish with a quick /grill-me.",
+      "ecosystem": "general",
+      "tags": [
+        "workflows",
+        "antigravity",
+        "frontmatter",
+        "learning",
+        "grill-me"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "45d1e490e93e5085",
+      "captured_at": "2026-10-19T16:36:08.891481+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0003",
+      "type": "user_correction",
+      "type_label": "User Corrections & Preferences",
+      "title": "Auto-Learn Trigger Scope High-Threshold Invariant",
+      "content": "Post-execution Auto-Learn + quick Grill-Me is scoped strictly to high-threshold major executions (multi-file feature builds, architectural changes, /build-feature, /ship), omitting single-query turns.",
+      "ecosystem": "general",
+      "tags": [
+        "auto-learn",
+        "grill-me",
+        "trigger-threshold",
+        "invariants"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "4f49836e441a4288",
+      "captured_at": "2026-10-19T16:40:59.150360+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0004",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "Pre-Execution Tool Optimization Protocol & Decision Matrix",
+      "content": "Before taking any action, determine the optimal tool primitive that minimizes tokens and time (grep_search for search, full view_file for inspection, multi_replace_file_content for batch edits, sync run_command for test/build, reactive wakeup for async tasks).",
+      "ecosystem": "web",
+      "tags": [
+        "tool-optimization",
+        "token-economy",
+        "pre-flight",
+        "velocity",
+        "performance"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "08ef10eee5b12693",
+      "captured_at": "2026-10-19T16:51:58.187080+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0005",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "Context-Driven Workflow Adaptation with Lean On-Demand Loading",
+      "content": "Autonomously adapt specialized ZeroGravity workflows when tasks align with their domain (/webperf, /debug, /design-ui, /reach, /yagni-simplify, /spec, /ship). Load on-demand in a single view_file call without preloading or bloating context tokens.",
+      "ecosystem": "general",
+      "tags": [
+        "workflows",
+        "context-adaptation",
+        "lean-loading",
+        "token-economy",
+        "on-demand"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "23a66c7f725ea5d7",
+      "captured_at": "2026-10-19T17:05:00.286482+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0006",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "Native Integrated Tools Over Python Subprocesses",
+      "content": "Use native integrated tools (view_file, write_to_file, replace_file_content, multi_replace_file_content, grep_search, ask_question) for all internal agent memory, context, checklist, and configuration operations instead of executing internal Python scripts (analyze.py, auto_evolve.py, checklist.py, harness.py, ki_injector.py, learn.py, mcp.py, session_manager.py, summarizer.py, sync_knowledge.py). Conserves tokens, eliminates subprocess latency, and ensures atomic operations.",
+      "ecosystem": "general",
+      "tags": [
+        "integrated-tools",
+        "token-save",
+        "no-python-internal",
+        "velocity",
+        "memory"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "8f3b14a9c02d6e71",
+      "captured_at": "2026-10-19T17:15:00.000000+00:00",
+      "synced": false
+    },
+    {
+      "id": "STR-0007",
+      "type": "tool_preference",
+      "type_label": "Tool Preferences & Workflows",
+      "title": "Context-Driven Skill Auto-Activation",
+      "content": "Autonomously identify and inspect matching available skills (SKILL.md) via single whole-file view_file call before executing specialized tasks (e.g. Chrome DevTools, accessibility, Hugging Face CLI, ponytail debt, performance, security). Eliminates ad-hoc guesswork and ensures compliance with official tool runbooks.",
+      "ecosystem": "general",
+      "tags": [
+        "skills",
+        "auto-activation",
+        "progressive-disclosure",
+        "context-driven",
+        "runbooks"
+      ],
+      "source": "agent",
+      "project": "agent",
+      "hash": "6b2a8d3e91f4c7a5",
+      "captured_at": "2026-10-19T17:45:00.000000+00:00",
+      "synced": false
+    }
+  ]
+}

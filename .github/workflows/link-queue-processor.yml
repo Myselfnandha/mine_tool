@@ -1,0 +1,38 @@
+name: Automated Link Queue Processor (24/7)
+
+on:
+  schedule:
+    # Run every 6 hours automatically (24/7 background queue maintenance)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to test and process into queue'
+        required: false
+        default: 'https://github.com/TriliumNext/Trilium'
+
+jobs:
+  process-queue:
+    name: Process Link Queue & Classify Domains
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Automated Link Queue Processor
+        run: |
+          python3 scripts/process_link_queue.py "${{ github.event.inputs.url || 'https://github.com/TriliumNext/Trilium' }}" > processed_link.json
+          cat processed_link.json
+
+      - name: Upload Processed Link Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: processed-link-metadata
+          path: processed_link.json
+          retention-days: 7
