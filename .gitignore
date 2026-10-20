@@ -17,3 +17,6 @@ android/*.iml
 # HF Space temp
 hf_space_link_processor/__pycache__
 hf_space_link_processor/*.db
+
+# APK release folder
+apk_release/
