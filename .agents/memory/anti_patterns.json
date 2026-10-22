@@ -145,6 +145,14 @@
       "root_cause": "Multiple Electron instances duplicate renderers, extension hosts, and language servers, exhausting RAM and triggering slow disk swap thrashing",
       "strategy": "Consolidate active projects into a single multi-root workspace using ide-open, prune stale processes with ide-prune, and expand ZRAM to 12GB",
       "invariant_rule": "Consolidate concurrent development projects into unified multi-root workspaces to avoid Electron process multiplication."
+    },
+    {
+      "id": "AP-019",
+      "category": "architecture",
+      "mistake": "Targeting dynamic REST POST endpoints on static hosting spaces or neglecting UI state reactive update upon sync completion",
+      "root_cause": "Static web spaces (like static Hugging Face spaces) serve assets but lack backend API routing; sync calls fail or get swallowed by probes, and decoupled UI state does not re-render synced items",
+      "strategy": "Utilize dedicated persistent cloud vault storage (Hugging Face Dataset API with NDJSON commits and cache-busted raw reads) and subscribe UI state setters to sync completion, tab focus, and visibility change events",
+      "invariant_rule": "Always pair static frontends with persistent cloud vault APIs and subscribe UI state to reactive sync events."
     }
   ]
 }
