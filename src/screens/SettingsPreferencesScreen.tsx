@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserSettings } from '../types';
-import { SyncEngine, DEFAULT_HF_SPACE_URL } from '../modules/sync/syncEngine';
+import { SyncEngine, DEFAULT_HF_SPACE_URL, DEFAULT_HF_DATASET_REPO } from '../modules/sync/syncEngine';
 
 interface SettingsPreferencesScreenProps {
   settings: UserSettings;
@@ -35,7 +35,7 @@ export const SettingsPreferencesScreen: React.FC<SettingsPreferencesScreenProps>
     setIsTesting(true);
     setTestResult(null);
     try {
-      const result = await SyncEngine.testConnection(settings.hfServerUrl, settings.hfAccessToken);
+      const result = await SyncEngine.testConnection(settings.hfDatasetRepo, settings.hfAccessToken);
       setTestResult(result);
     } catch (err: any) {
       setTestResult({
@@ -369,11 +369,39 @@ export const SettingsPreferencesScreen: React.FC<SettingsPreferencesScreenProps>
         {/* Hugging Face Server Details (shown if HF mode active) */}
         {settings.offlineSyncMode === 'huggingface_space' && (
           <div className="space-y-3.5 pt-2 border-t border-surface-container-high/60">
+            {/* Cloud Dataset Vault Input */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-on-surface">
+                  Hugging Face Cloud Dataset Vault
+                </label>
+                <a
+                  href={`https://huggingface.co/datasets/${settings.hfDatasetRepo || DEFAULT_HF_DATASET_REPO}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-primary hover:underline flex items-center gap-0.5"
+                >
+                  <span>Open Hub Dataset</span>
+                  <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                </a>
+              </div>
+              <input
+                type="text"
+                value={settings.hfDatasetRepo || DEFAULT_HF_DATASET_REPO}
+                onChange={(e) => onUpdateSettings({ ...settings, hfDatasetRepo: e.target.value })}
+                placeholder="nandhaalagesan248/mine-notes-vault"
+                className="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl px-3.5 py-2 text-xs font-mono text-on-surface focus:outline-none focus:border-primary"
+              />
+              <p className="text-[10px] text-outline">
+                Shared persistent cloud JSON vault. Both the Android APK and web space read and commit to this repository.
+              </p>
+            </div>
+
             {/* Server URL Input */}
             <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-on-surface">
-                  Hugging Face Space Server URL
+                  Hugging Face Space Web URL
                 </label>
                 {settings.hfServerUrl !== DEFAULT_HF_SPACE_URL && (
                   <button

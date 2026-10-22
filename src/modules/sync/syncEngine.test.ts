@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SyncEngine, DEFAULT_HF_SPACE_URL } from './syncEngine';
+import { StorageAdapter } from '../storage/storageAdapter';
 import { Note, SharedLink } from '../../types';
 
 describe('SyncEngine', () => {
@@ -105,6 +106,94 @@ describe('SyncEngine', () => {
       const result = await SyncEngine.testConnection('https://invalid.test');
       expect(result.success).toBe(false);
       expect(result.message).toContain('failed');
+    });
+  });
+
+  describe('Cloud Vault Hub Synchronization', () => {
+    it('pulls remote notes and updates StorageAdapter', async () => {
+      const mockRemoteVault = {
+        notes: [
+          {
+            id: 'cloud_note_1',
+            title: 'Note from Hugging Face Cloud',
+            content: 'Synced seamlessly',
+            category: 'Studio',
+            tags: ['cloud'],
+            readTime: '1 min',
+            createdAt: '2026-10-22T08:00:00Z',
+            updatedAt: '2026-10-22T08:00:00Z',
+          },
+        ],
+        links: [],
+        tasks: [],
+        notebooks: [],
+        lastSyncedAt: '2026-10-22T08:00:00Z',
+      };
+
+      global.fetch = vi.fn().mockImplementation((url: string) => {
+        if (url.includes('raw/main/vault.json')) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(mockRemoteVault),
+          });
+        }
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({ success: true }),
+        });
+      });
+
+      const res = await SyncEngine.sync({ force: true });
+      expect(res.success).toBe(true);
+      expect(res.message).toContain('Synchronized with Hugging Face Vault');
+
+      const notes = StorageAdapter.getNotes();
+      const found = notes.find((n) => n.id === 'cloud_note_1');
+      expect(found).toBeDefined();
+      expect(found?.title).toBe('Note from Hugging Face Cloud');
+    });
+
+    it('creates NDJSON commit to Hub when local notes are modified', async () => {
+      const localNote: Note = {
+        id: 'local_push_1',
+        title: 'Local Note to Push',
+        content: 'Commits to Hub',
+        category: 'Ideas',
+        tags: ['push'],
+        readTime: '1 min',
+        isPinned: false,
+        createdAt: '2026-10-22T09:00:00Z',
+        updatedAt: '2026-10-22T09:00:00Z',
+      };
+      StorageAdapter.saveNote(localNote);
+
+      let commitBody = '';
+      global.fetch = vi.fn().mockImplementation((url: string, opts?: any) => {
+        if (url.includes('raw/main/vault.json')) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve({ notes: [], links: [], tasks: [], notebooks: [] }),
+          });
+        }
+        if (url.includes('/commit/main')) {
+          commitBody = opts?.body || '';
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve({ success: true, commitOid: 'abc123' }),
+          });
+        }
+        return Promise.resolve({ ok: true, status: 200 });
+      });
+
+      const res = await SyncEngine.sync({ force: true });
+      expect(res.success).toBe(true);
+      expect(commitBody).toContain('"key":"header"');
+      expect(commitBody).toContain('"key":"file"');
+      expect(commitBody).toContain('"path":"vault.json"');
     });
   });
 });

@@ -49,43 +49,68 @@ export const App: React.FC = () => {
 
   // Real-time Sync Engine subscription & automatic background sync
   useEffect(() => {
+    const refreshLocalState = () => {
+      setNotes(StorageAdapter.getNotes());
+      setLinks(StorageAdapter.getLinks());
+      setTasks(StorageAdapter.getTasks());
+      setNotebooks(StorageAdapter.getNotebooks());
+    };
+
     const unsubscribe = SyncEngine.subscribe((info) => {
       setSyncStatus(info);
+      if (info.status === 'synced') {
+        refreshLocalState();
+      }
     });
 
-    const handleOnline = () => {
+    const runSync = () => {
       if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
         SyncEngine.sync().then(() => {
-          setNotes(StorageAdapter.getNotes());
-          setLinks(StorageAdapter.getLinks());
-          setTasks(StorageAdapter.getTasks());
-          setNotebooks(StorageAdapter.getNotebooks());
+          refreshLocalState();
         });
       }
     };
-    window.addEventListener('online', handleOnline);
 
-    if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
-      SyncEngine.sync().then(() => {
-        setNotes(StorageAdapter.getNotes());
-        setLinks(StorageAdapter.getLinks());
-        setTasks(StorageAdapter.getTasks());
-        setNotebooks(StorageAdapter.getNotebooks());
-      });
-    }
+    const handleOnline = () => runSync();
+    const handleVisibilityOrFocus = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        runSync();
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    window.addEventListener('focus', handleVisibilityOrFocus);
+
+    // Initial sync on mount
+    runSync();
+
+    // Periodic cloud poll every 25 seconds when page is active
+    const pollInterval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        runSync();
+      }
+    }, 25000);
 
     return () => {
       unsubscribe();
+      clearInterval(pollInterval);
       window.removeEventListener('online', handleOnline);
+      window.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
     };
-  }, [settings.offlineSyncMode, settings.autoSyncEnabled, settings.hfServerUrl]);
+  }, [settings.offlineSyncMode, settings.autoSyncEnabled, settings.hfDatasetRepo, settings.hfAccessToken]);
 
   const triggerAutoSync = () => {
     SyncEngine.markDirty(1);
     if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
-      setTimeout(() => {
-        SyncEngine.sync();
-      }, 1200);
+      setTimeout(async () => {
+        await SyncEngine.sync();
+        setNotes(StorageAdapter.getNotes());
+        setLinks(StorageAdapter.getLinks());
+        setTasks(StorageAdapter.getTasks());
+        setNotebooks(StorageAdapter.getNotebooks());
+      }, 1000);
     }
   };
 

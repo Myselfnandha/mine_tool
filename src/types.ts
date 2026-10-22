@@ -30,6 +30,7 @@ export interface Note {
   readTime: string;
   createdAt: string;
   updatedAt: string;
+  isDeleted?: boolean;
 }
 
 export interface SharedLink {
@@ -45,6 +46,7 @@ export interface SharedLink {
   savedAt: string;
   isRead: boolean;
   notes?: string;
+  isDeleted?: boolean;
 }
 
 export interface DomainCategoryRule {
@@ -69,6 +71,8 @@ export interface TaskItem {
   status: TaskStatus;
   noteId?: string;
   completedAt?: string;
+  updatedAt?: string;
+  isDeleted?: boolean;
 }
 
 export interface Notebook {
@@ -78,6 +82,7 @@ export interface Notebook {
   coverAccent: string;
   icon: string;
   lastEdited: string;
+  isDeleted?: boolean;
 }
 
 export type ThemeMode = 'auto' | 'light' | 'dark';
@@ -121,6 +126,7 @@ export interface UserSettings {
   offlineSyncMode: 'local_only' | 'github_actions' | 'huggingface_space';
   storageSizeEstimate: string;
   hfServerUrl: string;
+  hfDatasetRepo?: string;
   hfAccessToken?: string;
   autoSyncEnabled: boolean;
   lastSyncedAt?: string;

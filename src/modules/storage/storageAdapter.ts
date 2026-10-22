@@ -41,6 +41,7 @@ export const INITIAL_SETTINGS: UserSettings = {
   offlineSyncMode: 'huggingface_space',
   storageSizeEstimate: '0 KB (clean vault)',
   hfServerUrl: 'https://nandhaalagesan248-mine-notes.static.hf.space',
+  hfDatasetRepo: 'nandhaalagesan248/mine-notes-vault',
   autoSyncEnabled: true,
 };
 
@@ -50,128 +51,190 @@ export class StorageAdapter {
   }
 
   // --- Notes ---
-  public static getNotes(): Note[] {
-    if (!this.isBrowser()) return INITIAL_NOTES;
+  public static getNotes(includeDeleted = false): Note[] {
+    if (!this.isBrowser()) return includeDeleted ? [...INITIAL_NOTES] : INITIAL_NOTES.filter((n) => !n.isDeleted);
     const raw = localStorage.getItem(STORAGE_KEYS.NOTES);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify([]));
       return [];
     }
     try {
-      return JSON.parse(raw);
+      const parsed: Note[] = JSON.parse(raw);
+      return includeDeleted ? parsed : parsed.filter((n) => !n.isDeleted);
     } catch {
       return [];
     }
   }
 
-  public static saveNote(note: Note): void {
-    const notes = this.getNotes();
-    const index = notes.findIndex((n) => n.id === note.id);
-    if (index >= 0) {
-      notes[index] = { ...note, updatedAt: new Date().toISOString() };
-    } else {
-      notes.unshift({ ...note, updatedAt: new Date().toISOString() });
-    }
+  public static getRawNotes(): Note[] {
+    return this.getNotes(true);
+  }
+
+  public static setAllNotes(notes: Note[]): void {
     if (this.isBrowser()) {
       localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+    } else {
+      const copy = [...notes];
+      INITIAL_NOTES.length = 0;
+      INITIAL_NOTES.push(...copy);
     }
   }
 
+  public static saveNote(note: Note): void {
+    const notes = this.getRawNotes();
+    const index = notes.findIndex((n) => n.id === note.id);
+    const noteWithMetadata = {
+      ...note,
+      isDeleted: false,
+      updatedAt: new Date().toISOString(),
+    };
+    if (index >= 0) {
+      notes[index] = noteWithMetadata;
+    } else {
+      notes.unshift(noteWithMetadata);
+    }
+    this.setAllNotes(notes);
+  }
+
   public static deleteNote(id: string): void {
-    const notes = this.getNotes().filter((n) => n.id !== id);
-    if (this.isBrowser()) {
-      localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+    const notes = this.getRawNotes();
+    const index = notes.findIndex((n) => n.id === id);
+    if (index >= 0) {
+      notes[index] = {
+        ...notes[index],
+        isDeleted: true,
+        updatedAt: new Date().toISOString(),
+      };
+      this.setAllNotes(notes);
     }
   }
 
   public static togglePinNote(id: string): void {
-    const notes = this.getNotes();
+    const notes = this.getRawNotes();
     const target = notes.find((n) => n.id === id);
     if (target) {
       target.isPinned = !target.isPinned;
       target.updatedAt = new Date().toISOString();
-      if (this.isBrowser()) {
-        localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
-      }
+      this.setAllNotes(notes);
     }
   }
 
   // --- Links ---
-  public static getLinks(): SharedLink[] {
-    if (!this.isBrowser()) return INITIAL_LINKS;
+  public static getLinks(includeDeleted = false): SharedLink[] {
+    if (!this.isBrowser()) return includeDeleted ? [...INITIAL_LINKS] : INITIAL_LINKS.filter((l) => !l.isDeleted);
     const raw = localStorage.getItem(STORAGE_KEYS.LINKS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify([]));
       return [];
     }
     try {
-      return JSON.parse(raw);
+      const parsed: SharedLink[] = JSON.parse(raw);
+      return includeDeleted ? parsed : parsed.filter((l) => !l.isDeleted);
     } catch {
       return [];
     }
   }
 
-  public static saveLink(link: SharedLink): void {
-    const links = this.getLinks();
-    const index = links.findIndex((l) => l.id === link.id || l.url === link.url);
-    if (index >= 0) {
-      links[index] = link;
-    } else {
-      links.unshift(link);
-    }
+  public static getRawLinks(): SharedLink[] {
+    return this.getLinks(true);
+  }
+
+  public static setAllLinks(links: SharedLink[]): void {
     if (this.isBrowser()) {
       localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+    } else {
+      const copy = [...links];
+      INITIAL_LINKS.length = 0;
+      INITIAL_LINKS.push(...copy);
     }
   }
 
+  public static saveLink(link: SharedLink): void {
+    const links = this.getRawLinks();
+    const index = links.findIndex((l) => l.id === link.id || l.url === link.url);
+    const linkWithMeta = {
+      ...link,
+      isDeleted: false,
+      savedAt: link.savedAt || new Date().toISOString(),
+    };
+    if (index >= 0) {
+      links[index] = linkWithMeta;
+    } else {
+      links.unshift(linkWithMeta);
+    }
+    this.setAllLinks(links);
+  }
+
   public static deleteLink(id: string): void {
-    const links = this.getLinks().filter((l) => l.id !== id);
-    if (this.isBrowser()) {
-      localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+    const links = this.getRawLinks();
+    const index = links.findIndex((l) => l.id === id);
+    if (index >= 0) {
+      links[index] = {
+        ...links[index],
+        isDeleted: true,
+        savedAt: new Date().toISOString(),
+      };
+      this.setAllLinks(links);
     }
   }
 
   public static toggleLinkRead(id: string): void {
-    const links = this.getLinks();
+    const links = this.getRawLinks();
     const target = links.find((l) => l.id === id);
     if (target) {
       target.isRead = !target.isRead;
-      if (this.isBrowser()) {
-        localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
-      }
+      this.setAllLinks(links);
     }
   }
 
   // --- Tasks ---
-  public static getTasks(): TaskItem[] {
-    if (!this.isBrowser()) return INITIAL_TASKS;
+  public static getTasks(includeDeleted = false): TaskItem[] {
+    if (!this.isBrowser()) return includeDeleted ? [...INITIAL_TASKS] : INITIAL_TASKS.filter((t) => !t.isDeleted);
     const raw = localStorage.getItem(STORAGE_KEYS.TASKS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify([]));
       return [];
     }
     try {
-      return JSON.parse(raw);
+      const parsed: TaskItem[] = JSON.parse(raw);
+      return includeDeleted ? parsed : parsed.filter((t) => !t.isDeleted);
     } catch {
       return [];
     }
   }
 
-  public static saveTask(task: TaskItem): void {
-    const tasks = this.getTasks();
-    const index = tasks.findIndex((t) => t.id === task.id);
-    if (index >= 0) {
-      tasks[index] = task;
-    } else {
-      tasks.unshift(task);
-    }
+  public static getRawTasks(): TaskItem[] {
+    return this.getTasks(true);
+  }
+
+  public static setAllTasks(tasks: TaskItem[]): void {
     if (this.isBrowser()) {
       localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+    } else {
+      const copy = [...tasks];
+      INITIAL_TASKS.length = 0;
+      INITIAL_TASKS.push(...copy);
     }
   }
 
+  public static saveTask(task: TaskItem): void {
+    const tasks = this.getRawTasks();
+    const index = tasks.findIndex((t) => t.id === task.id);
+    const taskWithMeta = {
+      ...task,
+      isDeleted: false,
+      updatedAt: new Date().toISOString(),
+    };
+    if (index >= 0) {
+      tasks[index] = taskWithMeta;
+    } else {
+      tasks.unshift(taskWithMeta);
+    }
+    this.setAllTasks(tasks);
+  }
+
   public static toggleTask(id: string): void {
-    const tasks = this.getTasks();
+    const tasks = this.getRawTasks();
     const target = tasks.find((t) => t.id === id);
     if (target) {
       if (target.status === 'completed') {
@@ -181,31 +244,51 @@ export class StorageAdapter {
         target.status = 'completed';
         target.completedAt = new Date().toISOString();
       }
-      if (this.isBrowser()) {
-        localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
-      }
+      target.updatedAt = new Date().toISOString();
+      this.setAllTasks(tasks);
     }
   }
 
   public static deleteTask(id: string): void {
-    const tasks = this.getTasks().filter((t) => t.id !== id);
-    if (this.isBrowser()) {
-      localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+    const tasks = this.getRawTasks();
+    const index = tasks.findIndex((t) => t.id === id);
+    if (index >= 0) {
+      tasks[index] = {
+        ...tasks[index],
+        isDeleted: true,
+        updatedAt: new Date().toISOString(),
+      };
+      this.setAllTasks(tasks);
     }
   }
 
   // --- Notebooks ---
-  public static getNotebooks(): Notebook[] {
-    if (!this.isBrowser()) return INITIAL_NOTEBOOKS;
+  public static getNotebooks(includeDeleted = false): Notebook[] {
+    if (!this.isBrowser()) return includeDeleted ? [...INITIAL_NOTEBOOKS] : INITIAL_NOTEBOOKS.filter((n) => !n.isDeleted);
     const raw = localStorage.getItem(STORAGE_KEYS.NOTEBOOKS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.NOTEBOOKS, JSON.stringify([]));
       return [];
     }
     try {
-      return JSON.parse(raw);
+      const parsed: Notebook[] = JSON.parse(raw);
+      return includeDeleted ? parsed : parsed.filter((n) => !n.isDeleted);
     } catch {
       return [];
+    }
+  }
+
+  public static getRawNotebooks(): Notebook[] {
+    return this.getNotebooks(true);
+  }
+
+  public static setAllNotebooks(notebooks: Notebook[]): void {
+    if (this.isBrowser()) {
+      localStorage.setItem(STORAGE_KEYS.NOTEBOOKS, JSON.stringify(notebooks));
+    } else {
+      const copy = [...notebooks];
+      INITIAL_NOTEBOOKS.length = 0;
+      INITIAL_NOTEBOOKS.push(...copy);
     }
   }
 
