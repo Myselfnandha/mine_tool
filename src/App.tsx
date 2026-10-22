@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StorageAdapter } from './modules/storage/storageAdapter';
 import { LinkCategorizer } from './modules/links/linkCategorizer';
 import { ThemeManager } from './modules/theme/themeManager';
-import { Note, SharedLink, TaskItem, Notebook, UserSettings } from './types';
+import { SyncEngine } from './modules/sync/syncEngine';
+import { Note, SharedLink, TaskItem, Notebook, UserSettings, SyncStatusInfo } from './types';
 import { Header } from './components/Header';
 import { BottomNav, ScreenTab } from './components/BottomNav';
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -23,6 +24,7 @@ export const App: React.FC = () => {
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>(() =>
     ThemeManager.resolveEffectiveTheme(StorageAdapter.getSettings().themeMode || 'auto')
   );
+  const [syncStatus, setSyncStatus] = useState<SyncStatusInfo>(() => SyncEngine.getStatus());
 
   const [activeTab, setActiveTab] = useState<ScreenTab>('notes');
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -45,6 +47,48 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [settings.themeMode]);
 
+  // Real-time Sync Engine subscription & automatic background sync
+  useEffect(() => {
+    const unsubscribe = SyncEngine.subscribe((info) => {
+      setSyncStatus(info);
+    });
+
+    const handleOnline = () => {
+      if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
+        SyncEngine.sync().then(() => {
+          setNotes(StorageAdapter.getNotes());
+          setLinks(StorageAdapter.getLinks());
+          setTasks(StorageAdapter.getTasks());
+          setNotebooks(StorageAdapter.getNotebooks());
+        });
+      }
+    };
+    window.addEventListener('online', handleOnline);
+
+    if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
+      SyncEngine.sync().then(() => {
+        setNotes(StorageAdapter.getNotes());
+        setLinks(StorageAdapter.getLinks());
+        setTasks(StorageAdapter.getTasks());
+        setNotebooks(StorageAdapter.getNotebooks());
+      });
+    }
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('online', handleOnline);
+    };
+  }, [settings.offlineSyncMode, settings.autoSyncEnabled, settings.hfServerUrl]);
+
+  const triggerAutoSync = () => {
+    SyncEngine.markDirty(1);
+    if (settings.offlineSyncMode === 'huggingface_space' && settings.autoSyncEnabled) {
+      setTimeout(() => {
+        SyncEngine.sync();
+      }, 1200);
+    }
+  };
+
   // Toast dispatcher
   const addToast = (toast: Omit<ToastMessage, 'id'>) => {
     const newToast: ToastMessage = {
@@ -64,6 +108,7 @@ export const App: React.FC = () => {
     setNotes(StorageAdapter.getNotes());
     setSelectedNote(null);
     setActiveTab('notes');
+    triggerAutoSync();
     addToast({
       title: 'Note Saved',
       subtitle: `"${updatedNote.title}" updated in SQLite storage.`,
@@ -79,6 +124,7 @@ export const App: React.FC = () => {
       setSelectedNote(null);
       setActiveTab('notes');
     }
+    triggerAutoSync();
     addToast({
       title: 'Note Deleted',
       icon: 'delete',
@@ -89,6 +135,7 @@ export const App: React.FC = () => {
   const handleTogglePinNote = (id: string) => {
     StorageAdapter.togglePinNote(id);
     setNotes(StorageAdapter.getNotes());
+    triggerAutoSync();
   };
 
   const handleSaveQuickThought = (text: string) => {
@@ -113,6 +160,7 @@ export const App: React.FC = () => {
       const link = LinkCategorizer.processIncomingShare(text);
       StorageAdapter.saveLink(link);
       setLinks(StorageAdapter.getLinks());
+      triggerAutoSync();
       addToast({
         title: 'Zero-Confirmation Link Saved',
         subtitle: `Auto-categorized into ${link.folderCategory} (${link.domain})`,
@@ -120,6 +168,7 @@ export const App: React.FC = () => {
         color: link.folderColor,
       });
     } else {
+      triggerAutoSync();
       addToast({
         title: 'Quick Thought Captured',
         subtitle: 'Appended to Chronological Feed.',
@@ -133,6 +182,7 @@ export const App: React.FC = () => {
   const handleAddLink = (newLink: SharedLink) => {
     StorageAdapter.saveLink(newLink);
     setLinks(StorageAdapter.getLinks());
+    triggerAutoSync();
     addToast({
       title: 'Link Saved Without Confirmation',
       subtitle: `Filed into "${newLink.folderCategory}" (${newLink.domain})`,
@@ -144,11 +194,13 @@ export const App: React.FC = () => {
   const handleToggleReadLink = (id: string) => {
     StorageAdapter.toggleLinkRead(id);
     setLinks(StorageAdapter.getLinks());
+    triggerAutoSync();
   };
 
   const handleDeleteLink = (id: string) => {
     StorageAdapter.deleteLink(id);
     setLinks(StorageAdapter.getLinks());
+    triggerAutoSync();
     addToast({
       title: 'Link Removed',
       icon: 'delete',
@@ -160,6 +212,7 @@ export const App: React.FC = () => {
   const handleToggleTask = (id: string) => {
     StorageAdapter.toggleTask(id);
     setTasks(StorageAdapter.getTasks());
+    triggerAutoSync();
   };
 
   const handleAddTask = (taskData: Partial<TaskItem>) => {
@@ -175,6 +228,7 @@ export const App: React.FC = () => {
     };
     StorageAdapter.saveTask(newTask);
     setTasks(StorageAdapter.getTasks());
+    triggerAutoSync();
     addToast({
       title: 'Task Created',
       subtitle: newTask.title,
@@ -186,6 +240,7 @@ export const App: React.FC = () => {
   const handleDeleteTask = (id: string) => {
     StorageAdapter.deleteTask(id);
     setTasks(StorageAdapter.getTasks());
+    triggerAutoSync();
   };
 
   // Settings Handlers
@@ -336,9 +391,23 @@ export const App: React.FC = () => {
         currentScreen={isSettingsOpen ? 'settings' : activeTab}
         themeMode={settings.themeMode || 'auto'}
         effectiveTheme={effectiveTheme}
+        syncStatus={syncStatus}
         onCycleTheme={handleCycleTheme}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onQuickLinkShare={() => setIsQuickShareModalOpen(true)}
+        onTriggerSync={async () => {
+          const res = await SyncEngine.sync({ force: true });
+          setNotes(StorageAdapter.getNotes());
+          setLinks(StorageAdapter.getLinks());
+          setTasks(StorageAdapter.getTasks());
+          setNotebooks(StorageAdapter.getNotebooks());
+          addToast({
+            title: res.success ? 'Hugging Face Space Synced' : 'Sync Status',
+            subtitle: res.message,
+            icon: res.success ? 'cloud_done' : 'sync_problem',
+            color: res.success ? '#3F6212' : '#C25E00',
+          });
+        }}
         unreadLinksCount={unreadLinksCount}
       />
 
@@ -351,6 +420,14 @@ export const App: React.FC = () => {
             onClose={() => setIsSettingsOpen(false)}
             onResetDefaults={handleResetDefaults}
             onExportData={handleExportData}
+            onTriggerSync={async () => {
+              const res = await SyncEngine.sync({ force: true });
+              setNotes(StorageAdapter.getNotes());
+              setLinks(StorageAdapter.getLinks());
+              setTasks(StorageAdapter.getTasks());
+              setNotebooks(StorageAdapter.getNotebooks());
+              return res;
+            }}
           />
         ) : activeTab === 'editor' && selectedNote ? (
           <NoteEditorScreen

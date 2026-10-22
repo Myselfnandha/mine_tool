@@ -6,9 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   bundledWebRuntime: false,
   server: {
-    url: 'https://nandhaalagesan248-mine-notes.static.hf.space',
     androidScheme: 'https',
-    cleartext: false,
   },
   android: {
     buildOptions: {

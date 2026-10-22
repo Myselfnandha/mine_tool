@@ -1,14 +1,15 @@
-import React from 'react';
-import { ThemeMode } from '../types';
+import { ThemeMode, SyncStatusInfo } from '../types';
 
 interface HeaderProps {
   currentScreen: string;
   themeMode: ThemeMode;
   effectiveTheme: 'light' | 'dark';
+  syncStatus: SyncStatusInfo;
   onCycleTheme: () => void;
   onOpenSettings: () => void;
   onQuickLinkShare: () => void;
   onOpenSearch?: () => void;
+  onTriggerSync?: () => void;
   unreadLinksCount: number;
 }
 
@@ -16,10 +17,12 @@ export const Header: React.FC<HeaderProps> = ({
   currentScreen,
   themeMode,
   effectiveTheme,
+  syncStatus,
   onCycleTheme,
   onOpenSettings,
   onQuickLinkShare,
   onOpenSearch,
+  onTriggerSync,
   unreadLinksCount,
 }) => {
   const getScreenTitle = (screen: string) => {
@@ -119,11 +122,55 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* Offline status indicator badge */}
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-[11px] text-on-surface-variant font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-            <span>Local SQLite</span>
-          </div>
+          {/* Live Hugging Face Sync Pill */}
+          <button
+            onClick={onTriggerSync}
+            disabled={syncStatus.status === 'syncing'}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-sans font-medium border transition-all active:scale-95 ${
+              syncStatus.status === 'syncing'
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                : syncStatus.status === 'synced'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300'
+                : syncStatus.status === 'offline'
+                ? 'bg-surface-container border-outline-variant/40 text-on-surface-variant'
+                : syncStatus.status === 'error'
+                ? 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
+                : 'bg-surface-container border-outline-variant/40 text-on-surface-variant'
+            }`}
+            title={`Hugging Face Space Sync: ${syncStatus.status.toUpperCase()} ${
+              syncStatus.lastSyncedAt
+                ? '• Synced ' + new Date(syncStatus.lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : ''
+            } • Click to Sync Now`}
+          >
+            <span
+              className={`material-symbols-outlined text-[14px] ${
+                syncStatus.status === 'syncing' ? 'animate-spin text-amber-600' :
+                syncStatus.status === 'synced' ? 'text-emerald-600' :
+                syncStatus.status === 'offline' ? 'text-outline' :
+                syncStatus.status === 'error' ? 'text-rose-600' : 'text-primary'
+              }`}
+            >
+              {syncStatus.status === 'syncing' ? 'sync' :
+               syncStatus.status === 'synced' ? 'cloud_done' :
+               syncStatus.status === 'offline' ? 'cloud_off' :
+               syncStatus.status === 'error' ? 'sync_problem' : 'cloud_sync'}
+            </span>
+            <span className="hidden sm:inline">
+              {syncStatus.status === 'syncing'
+                ? 'Syncing...'
+                : syncStatus.status === 'synced'
+                ? 'Synced'
+                : syncStatus.status === 'offline'
+                ? 'Offline Vault'
+                : syncStatus.status === 'error'
+                ? 'Sync Error'
+                : 'HF Sync'}
+            </span>
+            {syncStatus.pendingChangesCount > 0 && syncStatus.status !== 'syncing' && (
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" title={`${syncStatus.pendingChangesCount} local changes pending sync`}></span>
+            )}
+          </button>
 
           {/* Settings button */}
           <button

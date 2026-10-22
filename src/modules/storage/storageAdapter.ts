@@ -38,8 +38,10 @@ export const INITIAL_SETTINGS: UserSettings = {
   saveWithoutConfirmation: true,
   enableVoiceMemo: true,
   enableAndroidWidgetBridge: true,
-  offlineSyncMode: 'local_only',
+  offlineSyncMode: 'huggingface_space',
   storageSizeEstimate: '0 KB (clean vault)',
+  hfServerUrl: 'https://nandhaalagesan248-mine-notes.static.hf.space',
+  autoSyncEnabled: true,
 };
 
 export class StorageAdapter {
@@ -216,7 +218,8 @@ export class StorageAdapter {
       return INITIAL_SETTINGS;
     }
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      return { ...INITIAL_SETTINGS, ...parsed };
     } catch {
       return INITIAL_SETTINGS;
     }

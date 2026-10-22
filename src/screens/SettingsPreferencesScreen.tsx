@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserSettings } from '../types';
+import { SyncEngine, DEFAULT_HF_SPACE_URL } from '../modules/sync/syncEngine';
 
 interface SettingsPreferencesScreenProps {
   settings: UserSettings;
@@ -7,6 +8,7 @@ interface SettingsPreferencesScreenProps {
   onClose: () => void;
   onResetDefaults: () => void;
   onExportData: () => void;
+  onTriggerSync?: () => Promise<any>;
 }
 
 export const SettingsPreferencesScreen: React.FC<SettingsPreferencesScreenProps> = ({
@@ -15,12 +17,51 @@ export const SettingsPreferencesScreen: React.FC<SettingsPreferencesScreenProps>
   onClose,
   onResetDefaults,
   onExportData,
+  onTriggerSync,
 }) => {
+  const [isTesting, setIsTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+
   const toggleField = (key: keyof UserSettings) => {
     onUpdateSettings({
       ...settings,
       [key]: !settings[key],
     });
+  };
+
+  const handleTestConnection = async () => {
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      const result = await SyncEngine.testConnection(settings.hfServerUrl, settings.hfAccessToken);
+      setTestResult(result);
+    } catch (err: any) {
+      setTestResult({
+        success: false,
+        message: err.message || 'Connection failed',
+      });
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  const handleManualSyncNow = async () => {
+    setIsSyncing(true);
+    setSyncFeedback(null);
+    try {
+      if (onTriggerSync) {
+        await onTriggerSync();
+      } else {
+        await SyncEngine.sync({ force: true });
+      }
+      setSyncFeedback('Synchronization complete. Vault is up to date.');
+    } catch (err: any) {
+      setSyncFeedback(`Sync failed: ${err.message || 'Unknown error'}`);
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   return (
@@ -255,45 +296,194 @@ export const SettingsPreferencesScreen: React.FC<SettingsPreferencesScreenProps>
         </div>
       </section>
 
-      {/* Sync & Cloud Configuration */}
-      <section className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-card space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-on-surface flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[18px] text-primary">cloud_sync</span>
-          <span>Sync & Backend Strategy</span>
-        </h3>
-        <p className="text-xs text-on-surface-variant">
-          Mine Notes runs 100% offline-first. Optionally select an asynchronous processing worker:
-        </p>
+      {/* Sync & Hugging Face Server Configuration */}
+      <section className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-card space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-on-surface flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[18px] text-primary">cloud_sync</span>
+              <span>Hugging Face Space Cloud Sync</span>
+            </h3>
+            <p className="text-xs text-on-surface-variant">
+              Stable offline-first architecture with 24/7 background REST synchronization.
+            </p>
+          </div>
+          {settings.lastSyncedAt && (
+            <span className="text-[11px] font-mono text-outline">
+              Last synced: {new Date(settings.lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
 
-        <div className="space-y-2 pt-1 text-xs">
-          <label className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/40 hover:bg-surface-container-low cursor-pointer">
-            <input
-              type="radio"
-              name="sync_mode"
-              checked={settings.offlineSyncMode === 'local_only'}
-              onChange={() => onUpdateSettings({ ...settings, offlineSyncMode: 'local_only' })}
-              className="accent-primary"
-            />
-            <div>
-              <p className="font-medium text-on-surface">100% Local SQLite / IndexedDB (Recommended)</p>
-              <p className="text-outline">No network requests. Zero tracking. Instantaneous reads & writes.</p>
+        {/* Sync Mode Radio */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs">
+          <label
+            className={`p-3 rounded-xl border cursor-pointer transition-all ${
+              settings.offlineSyncMode === 'huggingface_space'
+                ? 'border-primary bg-primary-fixed/20 ring-1 ring-primary'
+                : 'border-outline-variant/40 hover:bg-surface-container-low'
+            }`}
+          >
+            <div className="flex items-start gap-2.5">
+              <input
+                type="radio"
+                name="sync_mode"
+                checked={settings.offlineSyncMode === 'huggingface_space'}
+                onChange={() => onUpdateSettings({ ...settings, offlineSyncMode: 'huggingface_space' })}
+                className="mt-0.5 accent-primary"
+              />
+              <div>
+                <p className="font-semibold text-on-surface">Hugging Face Space (Default Sync)</p>
+                <p className="text-[11px] text-outline mt-0.5">
+                  Offline-first with bidirectional REST sync to your 24/7 Hugging Face Server.
+                </p>
+              </div>
             </div>
           </label>
 
-          <label className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/40 hover:bg-surface-container-low cursor-pointer">
-            <input
-              type="radio"
-              name="sync_mode"
-              checked={settings.offlineSyncMode === 'huggingface_space'}
-              onChange={() => onUpdateSettings({ ...settings, offlineSyncMode: 'huggingface_space' })}
-              className="accent-primary"
-            />
-            <div>
-              <p className="font-medium text-on-surface">HuggingFace Spaces (Free classification fallback)</p>
-              <p className="text-outline">Asynchronously queries a free HF Space when unlisted URLs arrive.</p>
+          <label
+            className={`p-3 rounded-xl border cursor-pointer transition-all ${
+              settings.offlineSyncMode === 'local_only'
+                ? 'border-primary bg-primary-fixed/20 ring-1 ring-primary'
+                : 'border-outline-variant/40 hover:bg-surface-container-low'
+            }`}
+          >
+            <div className="flex items-start gap-2.5">
+              <input
+                type="radio"
+                name="sync_mode"
+                checked={settings.offlineSyncMode === 'local_only'}
+                onChange={() => onUpdateSettings({ ...settings, offlineSyncMode: 'local_only' })}
+                className="mt-0.5 accent-primary"
+              />
+              <div>
+                <p className="font-semibold text-on-surface">100% Local Vault Only</p>
+                <p className="text-[11px] text-outline mt-0.5">
+                  Zero cloud communication. Changes stored strictly in on-device storage.
+                </p>
+              </div>
             </div>
           </label>
         </div>
+
+        {/* Hugging Face Server Details (shown if HF mode active) */}
+        {settings.offlineSyncMode === 'huggingface_space' && (
+          <div className="space-y-3.5 pt-2 border-t border-surface-container-high/60">
+            {/* Server URL Input */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-on-surface">
+                  Hugging Face Space Server URL
+                </label>
+                {settings.hfServerUrl !== DEFAULT_HF_SPACE_URL && (
+                  <button
+                    type="button"
+                    onClick={() => onUpdateSettings({ ...settings, hfServerUrl: DEFAULT_HF_SPACE_URL })}
+                    className="text-[11px] text-primary hover:underline"
+                  >
+                    Reset to Default Space
+                  </button>
+                )}
+              </div>
+              <input
+                type="url"
+                value={settings.hfServerUrl || DEFAULT_HF_SPACE_URL}
+                onChange={(e) => onUpdateSettings({ ...settings, hfServerUrl: e.target.value })}
+                placeholder="https://nandhaalagesan248-mine-notes.static.hf.space"
+                className="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl px-3.5 py-2 text-xs font-mono text-on-surface focus:outline-none focus:border-primary"
+              />
+            </div>
+
+            {/* Optional Access Token */}
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-on-surface flex items-center justify-between">
+                <span>Hugging Face Access Token (Optional)</span>
+                <span className="text-[10px] text-outline font-normal">Only required for private spaces</span>
+              </label>
+              <input
+                type="password"
+                value={settings.hfAccessToken || ''}
+                onChange={(e) => onUpdateSettings({ ...settings, hfAccessToken: e.target.value })}
+                placeholder="hf_..."
+                className="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl px-3.5 py-2 text-xs font-mono text-on-surface focus:outline-none focus:border-primary"
+              />
+            </div>
+
+            {/* Auto-Sync Toggle */}
+            <div className="flex items-center justify-between pt-1">
+              <div className="space-y-0.5 pr-4">
+                <p className="text-xs font-medium text-on-surface">Automatic Background Synchronization</p>
+                <p className="text-[11px] text-outline">
+                  Debounce-syncs local mutations and synchronizes upon network reconnect.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => toggleField('autoSyncEnabled')}
+                className={`w-11 h-6 rounded-full transition-colors relative flex items-center p-0.5 ${
+                  settings.autoSyncEnabled ? 'bg-primary' : 'bg-surface-container-highest'
+                }`}
+              >
+                <span
+                  className={`w-5 h-5 rounded-full bg-white shadow-xs transition-transform transform ${
+                    settings.autoSyncEnabled ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                ></span>
+              </button>
+            </div>
+
+            {/* Test Connection & Sync Now Buttons */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={handleTestConnection}
+                disabled={isTesting}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-medium border border-outline-variant/50 transition-colors disabled:opacity-50"
+              >
+                <span className={`material-symbols-outlined text-[16px] ${isTesting ? 'animate-spin' : ''}`}>
+                  {isTesting ? 'sync' : 'network_check'}
+                </span>
+                <span>{isTesting ? 'Pinging Server...' : 'Test Connection'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleManualSyncNow}
+                disabled={isSyncing}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-medium shadow-xs hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                <span className={`material-symbols-outlined text-[16px] ${isSyncing ? 'animate-spin' : ''}`}>
+                  sync
+                </span>
+                <span>{isSyncing ? 'Synchronizing...' : 'Sync Vault Now'}</span>
+              </button>
+            </div>
+
+            {/* Test Feedback Alert */}
+            {testResult && (
+              <div
+                className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+                  testResult.success
+                    ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300'
+                    : 'bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-300'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  {testResult.success ? 'check_circle' : 'error'}
+                </span>
+                <span>{testResult.message}</span>
+              </div>
+            )}
+
+            {/* Manual Sync Feedback */}
+            {syncFeedback && (
+              <div className="p-3 rounded-lg text-xs flex items-center gap-2 bg-primary-fixed/20 border border-primary/30 text-primary">
+                <span className="material-symbols-outlined text-[16px]">info</span>
+                <span>{syncFeedback}</span>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Data Management & Export */}

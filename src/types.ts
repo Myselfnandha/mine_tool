@@ -82,6 +82,33 @@ export interface Notebook {
 
 export type ThemeMode = 'auto' | 'light' | 'dark';
 
+export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error' | 'offline';
+
+export interface SyncStatusInfo {
+  status: SyncStatus;
+  lastSyncedAt?: string;
+  errorMessage?: string;
+  pendingChangesCount: number;
+}
+
+export interface SyncPayload {
+  notes: Note[];
+  links: SharedLink[];
+  tasks: TaskItem[];
+  notebooks: Notebook[];
+  clientTimestamp: string;
+}
+
+export interface SyncResponse {
+  success: boolean;
+  serverTimestamp: string;
+  notes?: Note[];
+  links?: SharedLink[];
+  tasks?: TaskItem[];
+  notebooks?: Notebook[];
+  message?: string;
+}
+
 export interface UserSettings {
   appName: string;
   typographyFamily: 'Newsreader' | 'Inter' | 'Lora' | 'System';
@@ -93,4 +120,9 @@ export interface UserSettings {
   enableAndroidWidgetBridge: boolean;
   offlineSyncMode: 'local_only' | 'github_actions' | 'huggingface_space';
   storageSizeEstimate: string;
+  hfServerUrl: string;
+  hfAccessToken?: string;
+  autoSyncEnabled: boolean;
+  lastSyncedAt?: string;
 }
+
