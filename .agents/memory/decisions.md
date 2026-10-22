@@ -43,3 +43,6 @@ Durable architectural decisions and interface contracts. Implementation details 
 ### 12. Mine Notes: Zero-Confirmation Link Intake & Deep Modular Architecture
 - **Decision**: URLs captured via Android share intent or clipboard are immediately classified by domain, automatically filed into domain folders (e.g. `github.com` → "Code & Repositories"), and persisted locally with zero confirmation dialogues. Android Home Screen Widget communicates directly via background intents to the local storage adapter with sub-15ms latency without launching full application windows.
 
+### 13. Hugging Face Cloud Dataset Vault Synchronization
+- **Decision**: In static Hugging Face Spaces where backend servers are absent, cloud synchronization targets an official Hugging Face Hub Dataset Vault (`nandhaalagesan248/mine-notes-vault`) via direct REST reads (`raw/main/vault.json` with cache busting) and native NDJSON commits (`api/datasets/{repo}/commit/main`). All clients run Last-Write-Wins (LWW) conflict resolution with soft-deletion tombstones, and React state is reactively updated upon sync completion, visibility change, and window focus.
+

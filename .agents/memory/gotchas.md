@@ -18,6 +18,10 @@ Anti-patterns (AP-001 through AP-017) are maintained in the machine-readable sin
 - **Gotcha**: npm v12+ defaults `allow-remote="none"`, failing to install git-based tarball dependencies.
 - **Rule**: Configure `npm config set allow-remote all` during environment setup.
 
+### 4. Static Hugging Face Space Has No Backend REST Handlers
+- **Gotcha**: Hugging Face Spaces with static HTML/JS cannot accept dynamic `POST /api/...` calls; any fetch returning 404/405 was previously caught silently by connection probes, misleading sync status without actually persisting changes.
+- **Rule**: In static spaces, connect bidirectional sync directly to a Hugging Face Hub Dataset Vault (`/datasets/{repo}/raw/...` and `/api/datasets/{repo}/commit/...`) with NDJSON payloads.
+
 ---
 
 ## 🔄 The 2-Way Immunization Protocol
